@@ -346,8 +346,9 @@ INSERT INTO `management_funds` (`job_name`, `amount`, `type`) VALUES
 ('families', 0, 'gang'),
 ('triads', 0, 'gang');
 
+--
 -- ADDON FEATURE SCRIPTS
-------------------------
+--
 
 -- QBPhone NO-PIXEL Style
 CREATE TABLE IF NOT EXISTS `player_contacts` (
@@ -479,8 +480,7 @@ ALTER TABLE `players`
 	ADD COLUMN `skin` LONGTEXT
 ;
 
-DROP TABLE IF EXISTS `player_outfits`
-
+DROP TABLE IF EXISTS `player_outfits`;
 CREATE TABLE IF NOT EXISTS `player_outfits` (
   `id` int NOT NULL AUTO_INCREMENT,
   `citizenid` varchar(50) DEFAULT NULL,
