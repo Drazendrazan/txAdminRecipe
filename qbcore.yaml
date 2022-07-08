@@ -26,6 +26,22 @@ tasks:
     src: https://github.com/caothienlong/qb-resources
     ref: main
     dest: ./resources
+  - action: download_github
+    src: https://github.com/caothienlong/map
+    ref: main
+    dest: ./resources/[map]
+  - action: download_github
+    src: https://github.com/caothienlong/eup
+    ref: main
+    dest: ./resources/[eup]
+  - action: download_github
+    src: https://github.com/caothienlong/veh
+    ref: main
+    dest: ./resources/[veh]
+  - action: download_github
+    src: https://github.com/caothienlong/clothes
+    ref: main
+    dest: ./resources/[clothes]
     # Clean up
   - action: remove_path
     path: ./tmp
