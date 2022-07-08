@@ -604,3 +604,16 @@ CREATE TABLE IF NOT EXISTS `mdt_impound` (
   `time` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `dream_jobs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `dream_jobs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `experience` int(11) NOT NULL,
+  `pickaxe` int(11) NOT NULL,
+  `job` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `first_time` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4;
