@@ -1,0 +1,31 @@
+$engine: 3
+$onesync: on
+name: Mysterious RP City
+version: v1.0.0
+author: Long_Thien_Cao
+
+tasks:
+  #  Download Base Files
+  - action: download_github
+    src: https://github.com/caothienlong/txAdminRecipe
+    ref: main
+    dest: ./tmp/qbcore
+  - action: move_path
+    src: ./tmp/qbcore/server.cfg
+    dest: ./server.cfg
+  - action: move_path
+    src: ./tmp/qbcore/myLogo.png
+    dest: ./myLogo.png
+  # Prepare Database
+  - action: connect_database
+  - action: query_database
+    file: ./tmp/qbcore/qbcore.sql
+    
+  # STANDALONE
+  - action: download_github
+    src: https://github.com/caothienlong/qb-resources
+    ref: main
+    dest: ./resources
+    # Clean up
+  - action: remove_path
+    path: ./tmp
