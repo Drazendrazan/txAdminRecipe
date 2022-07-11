@@ -8,16 +8,41 @@ password=miq6UCTX
 #TODO Check local resources path
 #TODO Check sitepath
 sitepath=g494190/gta5-fivem-txadmin/MysteriousRPCity/resources
-versionfile=main
+versionfile_path=.git/logs
+versionfile=HEAD
+local_commit=
+ftp_commit=
 
-# Retrieve FTP GameServer current commit
-lftp -c "open $user:$password@$site; get $sitepath/.git/refs/heads/$versionfile"
-if [ ! -f $versionfile ]; then
-    echo "@@@ ERROR: main file not found at ftp server"
-    exit -1
-fi
-ftp_commit=`tail -n 1 main | cut -d " " -f 2`
-echo "FTP Server commit: $ftp_commit"
+####################################
+### GET FTP CURRENT COMMIT CHANGESET
+####################################
+
+getCurrentFTPChangeset() {
+    # Retrieve FTP GameServer current commit
+    lftp -c "open $user:$password@$site; get $sitepath/$versionfile_path/$versionfile"
+    if [ ! -f $versionfile ]; then
+        echo "@@@ ERROR: $versionfile file not found at ftp server"
+        exit -1
+    fi
+    ftp_commit=`tail -n 1 $versionfile | cut -d " " -f 2`
+    printf "\n\n\@@@ @@@ @@@ FTP Server commit: $ftp_commit\n\n\n"
+}
+
+#################################################
+### UPDATE FTP COMMIT CHANGESET WITH LOCAL COMMIT
+#################################################
+
+updateCurrentFTPChangeset() {
+    # Retrieve Local commit
+    local_commit=`git log --pretty=oneline -1 | cut -d " " -f 1`
+
+    if [ $local_commit != $ftp_commit ]; then
+        echo "Update FTP current commit changeset"
+        lftp -c "open $user:$password@$site; put -c $versionfile_path/$versionfile -o $sitepath/$versionfile_path/$versionfile"
+    else
+        echo "Same commit as local. Nothing updated!"
+    fi
+}
 
 #######################
 ### SYNC Modified files
@@ -106,11 +131,37 @@ syncRemovedFiles() {
     printf "### SYNCED!!! \n\n\n"
 }
 
+#####################
+### MANUAL Sync files
+#####################
+
+syncFiles() {
+    file=$1
+    # Init open connection cmd
+    cmd="open $user:$password@$site; "
+    cmd=$cmd"put -c $file -o $sitepath/$file; "
+    printf "@@@ Start SYNCING files to: $sitepath\n" 
+    lftp -c "$cmd"
+    printf "### SYNCED!!! \n\n\n"
+}
+
+# Manual sync file
+# TODO UPDATE LATER
+# If input is not empty
+if [ ! -z $1 ]; then
+    syncFiles $1
+    exit 1
+fi
+
+getCurrentFTPChangeset
+
 syncModifiedFiles
 
 syncAddedFiles
 
 syncRemovedFiles
+
+updateCurrentFTPChangeset
 
 # Clean up
 rm $versionfile
