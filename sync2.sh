@@ -80,28 +80,37 @@ syncRemovedFiles() {
     # Init open connection cmd
     cmd="open $user:$password@$site; "
 
+    # List of Removed files that not staged
+    removed_files=`git diff --name-only --no-renames --diff-filter=D $ftp_commit`
+
+    # Append files removed to cmd above, to put remove files per connection opened
+    for file in $removed_files
+    do
+        cmd=$cmd"rm -f $sitepath/$file; "
+    done
+
     # List of NEW ADDED DIRs that UNTRACKED before
-    added_dirs=`git diff --name-only --no-renames --diff-filter=A --cached  $ftp_commit | awk -F "/*[^/]*/*$" '{ print ($1 == "" ? "." : $1); }' | sort | uniq`
+    removed_dirs=`git diff --name-only --no-renames --diff-filter=D $ftp_commit | awk -F "/*[^/]*/*$" '{ print ($1 == "" ? "." : $1); }' | sort | uniq`
 
-    # Append added dirs to cmd above, to make new dirs on remote per connection opened
-    for dir in $added_dirs
+    # Append dirs removed to cmd above, to remove dirs on remote per connection opened
+    for dir in $removed_dirs
     do
-        cmd=$cmd"mkdir -p -f $sitepath/$dir; "
+        # If dir is empty, remove it at remote as well
+        if [ ! -d $dir ]; then
+            cmd=$cmd"rm -r -f $sitepath/$dir; "
+        fi
     done
 
-    # List of new Added files that untracked before
-    added_files=`git diff --name-only --no-renames --diff-filter=A --cached $ftp_commit`
-
-    # Append files to cmd above, to put all files per connection opened
-    for file in $added_files
-    do
-        cmd=$cmd"put -c $file -o $sitepath/$file; "
-    done
-
-    printf "@@@ Start SYNCING added files to: $sitepath\n" 
+    printf "@@@ Start SYNCING removed files to: $sitepath\n" 
     lftp -c "$cmd"
     printf "### SYNCED!!! \n\n\n"
 }
+
+syncModifiedFiles
+
+syncAddedFiles
+
+syncRemovedFiles
 
 # Clean up
 rm $versionfile
