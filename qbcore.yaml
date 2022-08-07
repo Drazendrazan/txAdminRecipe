@@ -17,9 +17,10 @@ tasks:
     src: ./tmp/qbcore/myLogo.png
     dest: ./myLogo.png
   # Prepare Database
+  # Modify line below to choose backup db
   - action: connect_database
   - action: query_database
-    file: ./tmp/qbcore/qbcore.sql
+    file: ./tmp/qbcore/dbbackup/202208/qbcore.sql
     
   # STANDALONE
   - action: download_github
