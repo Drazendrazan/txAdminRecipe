@@ -58,6 +58,7 @@ syncModifiedFiles() {
     # Append file to cmd above, to put all files per connection opened
     for file in $diff_files
     do
+        cmd=$cmd"rm $sitepath/$file; "
         cmd=$cmd"put -c $file -o $sitepath/$file; "
     done
 
@@ -136,10 +137,17 @@ syncRemovedFiles() {
 #####################
 
 syncFiles() {
-    file=$1
     # Init open connection cmd
     cmd="open $user:$password@$site; "
-    cmd=$cmd"put -c $file -o $sitepath/$file; "
+
+    file=$1
+    if [ -f $file ]; then
+        cmd=$cmd"rm $sitepath/$file; "
+        cmd=$cmd"put -c $file -o $sitepath/$file; "
+    else
+        cmd=$cmd"mirror --continue --reverse --delete $file $sitepath/$file"
+    fi
+
     printf "@@@ Start SYNCING files to: $sitepath\n" 
     lftp -c "$cmd"
     printf "### SYNCED!!! \n\n\n"
