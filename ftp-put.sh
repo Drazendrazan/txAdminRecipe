@@ -2,12 +2,12 @@
 
 # Variables
 PWD=`pwd`
-site=139.99.125.42
+site=139.99.125.133
 user=caothienlong
 password=miq6UCTX
 #TODO Check local resources path
 #TODO Check sitepath
-sitepath=/g494190/gta5-fivem-txadmin/MysteriousRPCity/resources
+sitepath=/g501621/gta5-fivem-txadmin/MysteriousRPCity/resources
 versionfile_path=.git/logs
 versionfile=HEAD
 local_commit=
